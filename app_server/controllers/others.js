@@ -1,8 +1,8 @@
 /* GET home page. */
-const index = (req, res) => {
-  res.render('index', { title: 'Express 2017250028 윤세원' });
+const about = (req, res) => {
+  res.render('index', { title: 'about' });
 };
 
 module.exports = {
-  index
+  about
 };

@@ -1,6 +1,6 @@
 /* GET home page. */
 const homelist = (req, res) => {
-    res.render('index', { title: 'Express 2017250028 윤세원' });
+    res.render('locations-list', { title: 'Home' });
   };
   
 const locationInfo = (req, res) => {
