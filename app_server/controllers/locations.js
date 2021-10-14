@@ -96,4 +96,3 @@ const addReview = (req, res) => {
     locationInfo,
     addReview
   };
-  
