@@ -4,20 +4,20 @@ const ctrlLocations = require('../controllers/locations')
 const ctrlReviews = require('../controllers/reviews')
 
 router
-    .route('/locatins')
+    .route('/locations')
     .get(ctrlLocations.locationsListByDistance)
     .post(ctrlLocations.locationsCreate);
 router
-    .route('/locatins/:locationid')
+    .route('/locations/:locationid')
     .get(ctrlLocations.locationsReadOne)
-    .post(ctrlLocations.locationsUpdateOne)
+    .put(ctrlLocations.locationsUpdateOne)
     .delete(ctrlLocations.locationsDeleteOne);
 
 router
-    .route('/locatins/:locationid/reviews')
+    .route('/locations/:locationid/reviews')
     .post(ctrlReviews.ReviewsCreate);
 router
-    .route('/locatins/:locationid/reviews/:reviewid')
+    .route('/locations/:locationid/reviews/:reviewid')
     .get(ctrlReviews.ReviewsReadOne)
     .put(ctrlReviews.ReviewsUpdateOne)
     .delete(ctrlReviews.ReviewsDeleteOne);

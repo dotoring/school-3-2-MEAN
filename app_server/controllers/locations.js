@@ -1,3 +1,13 @@
+// const request = require('request');
+
+// const apiOptions = {
+//   server: 'http://localhost:3000'
+// };
+
+// if (process.env.NODE_ENV === 'production') {
+//   apiOptions.server = 'https://'
+// }
+
 /* GET home page. */
 const homelist = (req, res) => {
     res.render('locations-list', {
