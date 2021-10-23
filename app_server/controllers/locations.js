@@ -1,45 +1,101 @@
-// const request = require('request');
+const request = require('request');
 
-// const apiOptions = {
-//   server: 'http://localhost:3000'
-// };
+const apiOptions = {
+  server: 'http://localhost:3000'
+};
 
-// if (process.env.NODE_ENV === 'production') {
-//   apiOptions.server = 'https://'
-// }
+if (process.env.NODE_ENV === 'production') {
+  apiOptions.server = 'https://sewonloc8r.herokuapp.com/'
+}
+
+const requestOptions = {
+  url: 'http://yourapi.com/api/path',
+  method: 'GET',
+  json: {},
+  qs: {
+    offset: 20
+  }
+};
+request(requestOptions, (err, response, body) => {
+  if (err) {
+    console.log(err);
+  }
+  else if (response.statusCode === 200) {
+    console.log(body);
+  }
+  else {
+    console.log(response.statusCode);
+  }
+});
+
+const formatDistance = (distance) => {
+  let thisDistance = 0;
+  let unit = 'm';
+  if (distance > 1000) {
+    thisDistance = parseFloat(distance / 1000).toFixed(1);
+    unit = 'km';
+  }
+  else {
+    thisDistance = Math.floor(distance);
+  }
+  return thisDistance + unit;
+};
+
+const renderHomepage = (req, res, responseBody) => {
+  let message = null;
+  if (!(responseBody instanceof Array)) {
+    message = "API lookup error";
+    responseBody = [];
+  }
+  else {
+    if (!responseBody.length) {
+      message = "No places found nearby";
+    }
+  }
+  res.render('locations-list', {
+    title: 'Loc8r - find a place to work with wifi',
+    pageHeader: {
+      title: 'Loc8r',
+      Strapline: 'Find places to work with wifi near you!'
+    },
+    sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work \
+    when out and about. Perhaps with coffe, cake or a pint? \
+    Let Loct8r help you find the place you're looking for.",
+    locations: responseBody,
+    message
+  });
+};
 
 /* GET home page. */
 const homelist = (req, res) => {
-    res.render('locations-list', {
-      title: 'Loc8r - find a place to work with wifi',
-      pageHeader: {
-        title: 'Loc8r',
-        Strapline: 'Find places to work with wifi near you!'
-      },
-      sidebar: "Looking for wifi and a seat? Loc8r helps you find places to work \
-      when out and about. Perhaps with coffe, cake or a pint? \
-      Let Loct8r help you find the place you're looking for.",
-      locations: [{
-        name: 'Starcups',
-        address: '경기 안성시 중앙로 308',
-        rating: 3,
-        facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-        distance: '100m'
-      },{
-        name: 'Cafe Hero',
-        address: '경기 안성시 중앙로 300',
-        rating: 4,
-        facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-        distance: '200m'
-      },{
-        name: 'Burger Queen',
-        address: '경기 안성시 중앙로 350',
-        rating: 2,
-        facilities: ['Food', 'Premium wifi'],
-        distance: '250m'
-      }]
-    });
+  const path = '/api/locations';
+  const requestOptions = {
+    url: `${apiOptions.server}${path}`,
+    method: 'GET',
+    json: {},
+    qs: {
+      lng: 1,
+      lat: 1,
+      maxDistance: 0.001
+      // lng: 127.26676128203157,
+      // lat: 37.00790402022079,
+      // maxDistance: 200000
+    }
   };
+  request(
+    requestOptions,
+    (err, {statusCode}, body) => {
+      let data = [];
+      if (statusCode === 200 && body.length) {
+        data = body.map( (item) => {
+          item.distance = formatDistance(item.distance);
+          return item;
+        });
+      };
+      renderHomepage(req, res, data);
+    }
+  );
+};
   
 const locationInfo = (req, res) => {
   res.render('location-info',
